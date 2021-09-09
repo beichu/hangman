@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Hangman</title>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script> <!-- in order to use standard python library-->
+        <link rel="stylesheet" type="text/css" href="Hangman.css" /> <!-- external style sheet-->
+    </head>
+
+    <body onload="brython()">
+        <div class="container">
+            <div class="top" id="top"></div>
+            <div class="bottom">
+            <div class="left">
+                <div id="input_area">
+                    <p>Type a letter then push the Enter key:</p>
+                    <div class="input"><input type="text" id="input" name="input"></div>
+                    <div id="message"></div>
+                </div>
+
+                <div id="guessed">
+                    <p>Already guessed letters:</p>
+                    <div id="guessed_letters"></div>
+                </div>
+
+
+            </div>
+            <div class="right"><canvas id="myCanvas"></canvas></div>
+            </div>
+
+        </div>
+
+
+    <script type="text/python">
+    import main
+    main.new_game()
+
+    </script>
+    </body>
+</html>
