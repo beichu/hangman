@@ -1,69 +1,160 @@
-.container {
+#container {
+    border-style: solid;
     width: 50%;
-    margin: auto;
     padding-top: 2%;
     padding-bottom: 2%;
-    border-style: solid;
-    display: grid;
-    grid-template-rows: repeat(1, 1fr);
+    position: absolute;
+    top: 25%;
+    bottom: 25%;
+    left: 25%;
+    right: 25%;
 }
 
-.top {
+#top {
     width: 80%;
     padding-top: 1%;
     padding-bottom: 1%;
     margin: auto;
     border-style: solid;
     text-align: center;
-}
-
-.bottom {
-    width: 80%;
-    padding-top: 1%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    margin: auto;
-}
-
-.right {
-    width: 100%;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    text-align: center;
-    }
-
-.left {
-    width: 100%;
-    display: grid-template-rows(2, 1fr);
-    text-align: center;
-}
-
-.input_area {
-    border-style: solid;
-    padding-top: 5%;
-    padding-bottom: 5%;
-    display: grid-template-rows(3, 1fr);
-    flex-direction: column;
-}
-
-.guessed {
-    border-style: solid;
+    font-size: 2em;
     display: flex;
-    flex-direction: column;
+    justify-content: space-around;
 }
 
+#bottom {
+    width: 80%;
+    margin: auto;
+    padding-top: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+
+#left, #right {
+    flex: 50%;
+    text-align: center;
+}
+
+#hint {
+    margin-left: 1em;
+    border: solid black;
+    font-size: 1em;
+    background-color: white;
+    color: black;
+}
+#hint:hover {
+  background-color: black; /* Green */
+  color: white;
+}
 #message {
     padding-top: 5%;
     color: red;
+    font-size: 1.5em;
 }
 
-#myCanvas { 
-    width: 100%;
+#my_canvas { 
     padding-top: 20%;
     padding-bottom: 20%;
 }
 
-.p {
-    padding-top: 0%;
-    padding-bottom: 0%;
+
+
+@media screen and (orientation: portrait){
+  #container{
+      width: 90%;
+      position: absolute;
+      left: 5%;
+      top: 1%;
+      bottom: 1%;
+  }
+  #left, #right {
+    flex: 100%;
+    }
+  
+  #top {
+    font-size: 1em;
+}
+}
+
+@media screen and (max-width: 1500px) and (orientation: landscape){
+#container {
+      width: 90%;
+      position: absolute;
+      left: 5%;
+      top: 1%;
+      bottom: 1%;
+}
+  
+  #top {
+    font-size: 1em;
+}
+#bottom {
+    width: 100%;
+    margin: auto;
+    padding-top: 1%;
+    display: flex;
+    flex-wrap: wrap;   
+}
+#left, #right {
+    flex: 50%;
+    text-align: center;
+}
+}
+
+
+
+:root {
+    --brython-dialog-font-family: Arial;
+    --brython-dialog-font-size: 100%;
+    --brython-dialog-bgcolor: #fff;
+    --brython-dialog-border-color: #000;
+    --brython-dialog-title-bgcolor: #fff;
+    --brython-dialog-title-color: #fff;
+    --brython-dialog-close-bgcolor: #000;
+    --brython-dialog-close-color: #fff;
+}
+
+.brython-dialog-main {
+    font-family: var(--brython-dialog-font-family);
+    font-size: var(--brython-dialog-font-size);
+    background-color: var(--brython-dialog-bgcolor);
+    left: 10px;
+    top: 10px;
+    border-style: solid;
+    border-color: var(--brython-dialog-border-color);
+    border-width: 1px;
+    z-index: 10;
+}
+
+.brython-dialog-title {
+    background-color: var(--brython-dialog-title-bgcolor);
+    color: var(--brython-dialog-title-color);
+    border-style: none;
+    border-color: var(--brython-dialog-border-color);
+    border-width: 0px 0px 1px 0px;
+    padding: 0.4em;
+    cursor: default;
+}
+
+.brython-dialog-close {
+    float: right;
+    background-color: var(--brython-dialog-close-bgcolor);
+    color: var(--brython-dialog-close-color);
+    border-style: solid;
+    cursor: default;
+    padding: 0.1em;
+}
+
+.brython-dialog-panel {
+    padding: 0.6em;
+}
+
+.brython-dialog-message {
+    padding-right: 0.6em;
+}
+
+.brython-dialog-button {
+    margin: 0.5em;
 }
