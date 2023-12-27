@@ -135,6 +135,7 @@
     border-color: var(--brython-dialog-border-color);
     border-width: 1px;
     z-index: 10;
+    align: center;
 }
 
 .brython-dialog-title {
