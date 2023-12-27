@@ -1,12 +1,14 @@
 import math
-from browser import document, bind, window, ajax, html
+from browser import document, bind, ajax, html, aio
 from browser.widgets.dialog import Dialog
 import json
+
 
 
 class Panel:
 
     def __init__(self, canvas):
+        "Initialize the canvas"
         self.ctx = canvas.getContext("2d")
         self.ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -30,39 +32,41 @@ class Panel:
                     canvas.height*0.35, 
                     0.1 * canvas.height, 
                     0, math.pi * 2)
-            ctx.stroke()
+
         if counter == 2: # draw body
             ctx.moveTo(canvas.width*0.6, 
                        canvas.height*0.45)
             ctx.lineTo(canvas.width*0.6, 
                        canvas.height*0.65)
-            ctx.stroke()
+
         if counter == 3: # draw left arm
             ctx.moveTo(canvas.width*0.6, 
                        canvas.height*0.55)
             ctx.lineTo(canvas.width*0.6-canvas.height*0.14, 
                        canvas.height*0.41)
-            ctx.stroke()
+
         if counter == 4: # draw right arm
             ctx.moveTo(canvas.width*0.6, 
                        canvas.height*0.55)
             ctx.lineTo(canvas.width*0.6+canvas.height*0.14, 
                        canvas.height*0.41)
-            ctx.stroke()
+
         if counter == 5: # draw left leg
             ctx.moveTo(canvas.width*0.6, 
                        canvas.height*0.65)
             ctx.lineTo(canvas.width*0.6-canvas.height*0.14, 
                        canvas.height*0.8)
-            ctx.stroke()        
+      
         if counter == 6: # draw right leg
             ctx.moveTo(canvas.width*0.6, 
                        canvas.height*0.65)
             ctx.lineTo(canvas.width*0.6+canvas.height*0.14, 
                        canvas.height*0.8)
-            ctx.stroke()
+        ctx.stroke()
             
- 
+
+            
+        
 class Game:
 
     def __init__(self):
@@ -80,45 +84,35 @@ class Game:
         self.guessed_set = set()
 
         self.counter = 0
-        self.word = self.get_word()
-        
+         
         document["input"].bind("keypress", self.check)      
-        document["hint"].bind("click", self.get_def)
+        document["hint"].bind("click", self.show_hint)
+    
+        aio.run(self.APIhandler('https://random-word-api.herokuapp.com/word?number=1'))
 
     
-    def get_def(self, ev):
-        "get word def from the free dictionary api"
-        print('here')
-        url = "https://api.dictionaryapi.dev/api/v2/entries/en/{word}".format(word = self.word)
-        ajax.get(url, timeout = 15, cache = True, oncomplete=self.show_hint)
+    async def APIhandler(self, url):
+        word_req = await aio.get( url, timeout = 15, format = 'text', cache = True)
+        if word_req.status == 200:
+            word = json.loads(word_req.data)[0]
+            word_url = "https://api.dictionaryapi.dev/api/v2/entries/en/{word}".format(word = word)
+        def_req=  await aio.get(word_url, timeout = 15, format = 'text', cache = True)
+        if def_req.status != 200:
+            aio.run(self.APIhandler(url))
+        else:
+            self.word = json.loads(def_req.data)[0]['word']
+            self.word_def = json.loads(def_req.data)[0]['meanings'][0]['definitions'][0]['definition']
+            self.top_div.html = "_ "*len(self.word)
 
+                    
     
-    def get_word(self):
-        "get a random word from the random word API"
-        ajax.get("https://random-word-api.herokuapp.com/word?number=1",
-                  timeout=5,
-                  cache = True,
-                 oncomplete=self.show_word)
-    
+    def show_hint(self, ev):
+        if not self.word_def:
+            self.word_def = "Sorry, no hint available."
+        else:
+            print(self.word + ': ' + self.word_def)
+            self.message_div.text = 'Hint: ' + self.word_def
 
-
-
-    def show_word(self, req):
-        "display the word as a series of underscores"
-        self.word = req.text[2:-2]
-        self.top_div.html = "_ "*len(self.word)
-
-    
-    def show_hint(self, req):
-        print(req.text)
-        try:
-            if "No Definitions Found" in req.text:
-                word_def = "Sorry, no hint available."
-            else:
-                word_def = str(json.loads(req.text[1:-1])['meanings'][0]['definitions'][0]['definition'])
-            self.message_div.text = 'Hint: ' + word_def
-        except:
-            pass
     
     def show_dialogue(self, status):
         d = Dialog('', default_css=False, ok_cancel=True)
@@ -139,8 +133,8 @@ class Game:
 
     def check(self, ev):
         input_field = document["input"]
+        letter = input_field.value.lower() # convert to lower case where possible        
         if ev.keyCode == 13: # 13 is the code for the "Enter" key    
-            letter = input_field.value.lower() # convert to lower case where possible
             if (not (letter.isalpha()) or (len(letter) != 1)): 
                 self.message_div.text = "Please type a valid English letter!"
             else: # input is valid
